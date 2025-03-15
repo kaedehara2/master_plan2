@@ -6,17 +6,23 @@ class PlanProvider with ChangeNotifier {
 
   List<Plan> get plans => _plans;
 
-  // Menambahkan rencana baru
   void addPlan(String name) {
     _plans.add(Plan(name: name));
     notifyListeners();
   }
 
-  // ✅ Perbaikan: Tambahkan metode updatePlan agar tidak error
   void updatePlan(int index, String newName) {
-    if (index >= 0 && index < _plans.length) {
-      _plans[index] = Plan(name: newName); // Update objek dengan membuat instance baru
-      notifyListeners();
-    }
+    _plans[index] = _plans[index].copyWith(name: newName);
+    notifyListeners();
+  }
+
+  void toggleComplete(int index) {
+    _plans[index] = _plans[index].copyWith(isCompleted: !_plans[index].isCompleted);
+    notifyListeners();
+  }
+
+  void removePlan(int index) {
+    _plans.removeAt(index);
+    notifyListeners();
   }
 }

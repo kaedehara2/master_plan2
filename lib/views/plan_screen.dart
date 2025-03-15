@@ -37,9 +37,24 @@ class PlanScreen extends StatelessWidget {
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(12),
+                        leading: Checkbox(
+                          value: plan.isCompleted,
+                          onChanged: (value) {
+                            planProvider.toggleComplete(index);
+                          },
+                          activeColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
                         title: Text(
                           plan.name,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            decoration: plan.isCompleted ? TextDecoration.lineThrough : null,
+                            color: plan.isCompleted ? Colors.grey : Colors.black,
+                          ),
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.edit, color: Colors.blueAccent),
