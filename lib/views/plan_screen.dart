@@ -15,8 +15,15 @@ class PlanScreen extends StatelessWidget {
             itemCount: planProvider.plans.length,
             itemBuilder: (context, index) {
               final plan = planProvider.plans[index];
+
               return ListTile(
                 title: Text(plan.name),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    _editPlanDialog(context, planProvider, index, plan.name);
+                  },
+                ),
               );
             },
           );
@@ -28,6 +35,36 @@ class PlanScreen extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void _editPlanDialog(BuildContext context, PlanProvider provider, int index, String currentName) {
+    TextEditingController controller = TextEditingController(text: currentName);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Rencana"),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(hintText: "Masukkan rencana baru"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Batal"),
+            ),
+            TextButton(
+              onPressed: () {
+                provider.updatePlan(index, controller.text);
+                Navigator.pop(context);
+              },
+              child: const Text("Simpan"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
