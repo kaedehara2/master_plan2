@@ -229,3 +229,92 @@ Kesimpulan:
 -Membersihkan scrollController ketika widget tidak lagi digunakan, menghindari memory leak.
 
 *Lifecycle ini penting untuk memastikan bahwa aplikasi berjalan efisien, tidak ada sumber daya yang boros, dan tidak ada error akibat objek yang belum dibersihkan.
+
+
+
+*Menjawab pertanyaan praktikum 2*
+
+*Jelaskan mana yang dimaksud InheritedWidget pada langkah 1 tersebut! Mengapa yang digunakan InheritedNotifier?*
+
+Penjelasan InheritedWidget pada Langkah 1 (Praktikum 2)
+1.Mana yang Dimaksud dengan InheritedWidget pada Langkah 1?
+Pada kode berikut:
+
+class PlanProvider extends InheritedNotifier<ValueNotifier<Plan>> {
+
+-PlanProvider adalah turunan dari InheritedNotifier, yang pada dasarnya merupakan varian dari InheritedWidget.
+-InheritedWidget adalah mekanisme state management bawaan Flutter yang memungkinkan data diwariskan ke seluruh widget di bawahnya tanpa perlu meneruskannya secara eksplisit melalui parameter.
+-PlanProvider digunakan untuk membagikan data Plan ke widget lain yang membutuhkannya.
+
+2.Mengapa yang Digunakan InheritedNotifier?
+InheritedNotifier<ValueNotifier<Plan>> dipilih bukan InheritedWidget biasa karena:
+
+  1.Efisiensi dalam Update State
+
+-InheritedWidget sendiri bersifat immutable (tidak bisa berubah).
+-Jika menggunakan InheritedWidget biasa, setiap perubahan state akan menyebabkan rebuild pada seluruh widget yang bergantung padanya.
+-Solusi: InheritedNotifier digunakan karena bekerja dengan ValueNotifier<Plan>, yang hanya memperbarui widget yang membutuhkan tanpa perlu membangun ulang seluruh UI.
+
+  2.Mudah untuk Melakukan Reaktifitas
+
+-ValueNotifier<Plan> digunakan sebagai notifier, sehingga setiap perubahan pada Plan akan secara otomatis memberi tahu widget yang berlangganan tanpa perlu pemanggilan manual setState().
+
+  3.Memudahkan Akses Data di Widget Lain
+
+-Metode of(BuildContext context) memungkinkan widget lain mengakses Plan yang disimpan tanpa harus meneruskannya secara langsung sebagai parameter.
+-Contoh cara mengambil data dari PlanProvider:
+
+ValueNotifier<Plan> plan = PlanProvider.of(context);
+
+KESIMPULAN!!!
+
+-InheritedWidget yang digunakan di sini adalah InheritedNotifier, yang diturunkan oleh PlanProvider.
+-Alasan utama memilih InheritedNotifier dibanding InheritedWidget adalah agar update state lebih efisien dan hanya memengaruhi widget yang membutuhkan, tanpa menyebabkan rebuild yang tidak perlu pada seluruh UI.
+
+*Pertanyaan berikutnya = Jelaskan maksud dari method di langkah 3 pada praktikum tersebut! Mengapa dilakukan demikian?*
+
+Penjelasan Method pada Langkah 3 (Praktikum 2)
+1.Maksud dari Method di Langkah 3
+Pada file plan.dart, dua method berikut ditambahkan:
+
+int get completedCount => tasks
+  .where((task) => task.complete)
+  .length;
+
+✅ completedCount
+-Menghitung jumlah tugas yang sudah selesai (complete).
+-Menggunakan .where((task) => task.complete) untuk menyaring daftar tugas (tasks) yang memiliki status complete == true.
+-.length digunakan untuk mendapatkan jumlah tugas yang sudah selesai.
+-Hasilnya berupa angka yang menunjukkan jumlah tugas yang telah diselesaikan dalam suatu Plan.
+
+String get completenessMessage =>
+  '$completedCount out of ${tasks.length} tasks';
+✅ completenessMessage
+-Memberikan pesan informasi tentang progress tugas.
+-Menggunakan completedCount (jumlah tugas selesai) dibandingkan dengan tasks.length (total tugas) untuk menghasilkan pesan kemajuan dalam format teks:
+-Contoh output jika ada 3 tugas, 2 di antaranya selesai:
+
+'2 out of 3 tasks'
+
+-String ini akan digunakan di UI untuk memberi tahu pengguna tentang progres penyelesaian tugas.
+
+2.Mengapa Dilakukan Demikian?
+
+    1.Membantu UI dalam Menampilkan Data
+-Dengan adanya completedCount, UI tidak perlu menghitung manual berapa banyak tugas yang selesai.
+-Dengan completenessMessage, UI bisa langsung menampilkan pesan progress tanpa perlu membentuk string setiap kali.
+
+    2.Memisahkan Logika dari UI
+
+-Prinsip Pemisahan Concerns → Logika penghitungan tugas selesai ditangani di model (plan.dart), bukan di dalam widget Flutter.
+-Hal ini membuat kode lebih bersih dan mudah dipelihara.
+
+    3.Efisiensi dan Kemudahan Pengolahan Data
+
+-where((task) => task.complete).length lebih optimal dibanding melakukan loop manual setiap kali ingin mendapatkan jumlah tugas selesai.
+-Menggunakan getter (get completedCount dan get completenessMessage) membuatnya terasa seperti properti biasa tanpa harus memanggil method eksplisit.
+
+Kesimpulan
+-completedCount: Menghitung jumlah tugas yang selesai dalam suatu plan.
+-completenessMessage: Menghasilkan string yang memberi tahu pengguna tentang progres tugas.
+-Mengapa dilakukan? Untuk memudahkan tampilan UI, menghindari perhitungan ulang yang tidak perlu, dan menjaga pemisahan antara logika bisnis dan UI agar lebih bersih dan efisien.
