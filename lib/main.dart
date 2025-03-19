@@ -21,8 +21,15 @@ class MyApp extends StatelessWidget {
         title: 'Master Plan 2',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            elevation: 2,
+          ),
         ),
-        home: PlanScreen(), // INI PENTING! Harus menampilkan PlanScreen
+        home: const PlanScreen(), // Tambahkan `const` jika `PlanScreen` adalah widget stateless
       ),
     );
   }
